@@ -4,11 +4,11 @@ import os
 import cv2
 import csv
 import sys
+import files_directories as f_dirs
 
-dir_out = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/nifti_dataset'
-# dir_in = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/Images_png_01/Images_png'
+dir_out = f_dirs.nifti_files_head_add
 out_fmt = '%s_%03d-%03d.nii.gz'  # format of the nifti file name to output
-info_fn = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/DL_info.csv'  # file name of the information file
+info_fn = f_dirs.database_csv_information # file name of the information file
 
 def slices2nifti(ims, fn_out, spacing):
     """save 2D slices to 3D nifti file considering the spacing"""
@@ -64,11 +64,10 @@ def read_DL_info():
     return idxs, spacings
 
 
-def main(dir_in):
+def conv2Nifti(dir_in):
     idxs, spacings = read_DL_info()
     if not os.path.exists(dir_out):
         os.mkdir(dir_out)
-    print(dir_in)
     img_dirs = os.listdir(dir_in)
     img_dirs.sort()
     for dir1 in img_dirs:
@@ -99,8 +98,4 @@ def main(dir_in):
             slices2nifti(ims, fn_out, spacings1)
 
 
-
-
-if __name__ == '__main__':
-    main(sys.argv[1])
 
