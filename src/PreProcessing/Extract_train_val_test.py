@@ -3,6 +3,7 @@ import pandas as pd
 import visualize_image_mask as vim
 import os
 import nibabel as nib
+import files_directories as f_dirs
 
 def convert2NumPy(csv_dir, nifti_dir, save_dir):
     df = pd.read_csv(csv_dir)
@@ -90,9 +91,9 @@ def removeDouplicate(source_dir, dest_dir):
 
 
 if __name__ == "__main__":
-    # convert2NumPy(csv_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/Documents_Information/DL_info.csv',
-    #             nifti_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/nifti_dataset', 
-    #             save_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/numpy_dataset/3_consecutive_slice')
+    convert2NumPy(csv_dir = f_dirs.database_csv_information,
+                nifti_dir = f_dirs.nifti_files_head_add, 
+                save_dir = f_dirs.numpy_save_directory)
     
-    removeDouplicate(source_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/numpy_dataset/3_consecutive_slice/Test',
-                     dest_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/numpy_dataset/3_consecutive_slice/Test_Evaluation')
+    # removeDouplicate(source_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/numpy_dataset/3_consecutive_slice/Test',
+    #                  dest_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/numpy_dataset/3_consecutive_slice/Test_Evaluation')
