@@ -10,6 +10,7 @@ from copy import deepcopy
 import math
 from matplotlib.ticker import ScalarFormatter,LogFormatter,StrMethodFormatter,FixedFormatter
 import visualize_image_mask as vim
+import files_directories as f_dirs
 
 
 seriesuid_label = 'uid'
@@ -682,7 +683,7 @@ def criteria(hit_def, truth_coord, pred_coord, success_threshold):
 	return hit_flag
 
 
-def read_csv_gt(partition = 2, csv_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/Documents_Information/DL_info.csv'):
+def read_csv_gt(partition = 2, csv_dir = f_dirs.database_csv_information):
 	df = pd.read_csv(csv_dir)
 	gt_list = []
 	for idx, row in df.iterrows():
@@ -867,15 +868,15 @@ def plot_multiple_FROC_from_csv(addrs):
 			
 if __name__ == "__main__":
 
-	########################### next lines for nms ####################
-	thresh_list = [0.2]
-	for thresh in thresh_list:
-		detection_nms_postprocess('/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/Models/resnet/1_lr/2024-01-03_08-03-38.501891',box_thresh=thresh)
-		gt_csv_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/Documents_Information/DL_info.csv'
-		log_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/Models/2023-11-24_11-47-37.093989'
-		pred_csv_dir = os.path.join(log_dir, 'detection.csv')
-		FROC_Evaluation(gt_csv_dir, pred_csv_dir = pred_csv_dir, log_dir = log_dir, partition = 2)
-		input('....')
+	# ########################### next lines for nms ####################
+	# thresh_list = [0.2]
+	# for thresh in thresh_list:
+	# 	detection_nms_postprocess('/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/Models/resnet/1_lr/2024-01-03_08-03-38.501891',box_thresh=thresh)
+	# 	gt_csv_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/Documents_Information/DL_info.csv'
+	# 	log_dir = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/Models/2023-11-24_11-47-37.093989'
+	# 	pred_csv_dir = os.path.join(log_dir, 'detection.csv')
+	# 	FROC_Evaluation(gt_csv_dir, pred_csv_dir = pred_csv_dir, log_dir = log_dir, partition = 2)
+	# 	input('....')
 
 
 
