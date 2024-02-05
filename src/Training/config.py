@@ -1,3 +1,5 @@
+import files_directories as f_dirs
+
 class config(object):
 	def __init__(self, params = {}):
 		self.params = {}
@@ -54,8 +56,8 @@ class config(object):
 		self.params["aug_policy"]["RandomGamma"] = [(-10,10), 0.1]
 		#self.params["aug_policy"]["UnsharpMask"] = [(13, 15), 0, 1.0, 'constant', 1.0] doesn't work properly
 
-		self.params["data_dir"] = "/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/numpy_dataset/3_consecutive_slice"
-		self.params["gt_annotations_dir"] = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/Documents_Information/DL_info.csv'
-		self.params["saved_models_dir"] = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/Models/resnet/without_dicuagmentandwithouttransform'
+		self.params["data_dir"] = f_dirs.numpy_save_directory
+		self.params["gt_annotations_dir"] = f_dirs.database_csv_information
+		self.params["saved_models_dir"] = f_dirs.save_model_directory
 		self.params["unfreeze"] = True
 

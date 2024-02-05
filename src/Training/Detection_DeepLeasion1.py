@@ -26,6 +26,7 @@ from torchvision.models.detection.backbone_utils import _resnet_fpn_extractor, _
 from torchvision.models import resnet50, ResNet50_Weights
 import random
 
+
 from tqdm import tqdm
 import datetime
 from pathlib import Path
@@ -368,15 +369,7 @@ if __name__ == "__main__":
 		optimizer = torch.optim.SGD(params, lr=hyper_params["lr"],
 							momentum=hyper_params["momentum"], weight_decay=hyper_params["weight_decay"])
 		
-	if hyper_params["optimizer"] == 'adam':
-		optimizer = torch.optim.Adam(params, lr=hyper_params['lr'], weight_decay=hyper_params['weight_decay'])
-
-	if isinstance(hyper_params["step_size"], list):
-		lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, 
-											milestones=hyper_params["step_size"],
-										   	gamma=hyper_params["gamma"])
-	else:
-		lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
+	lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
 										   step_size=hyper_params["step_size"],
 										   gamma=hyper_params["gamma"])
 

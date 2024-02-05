@@ -2,3 +2,4 @@ png_files_head_add = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion
 nifti_files_head_add = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/nifti_dataset'
 database_csv_information = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/Documents_Information/DL_info.csv'
 numpy_save_directory = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/NIH/numpy_dataset/3_consecutive_slice'
+save_model_directory = '/gpfs_projects/mohammadmeh.farhangi/DiskStation/DeepLesion/Models/resnet/without_dicuagmentandwithouttransform'
