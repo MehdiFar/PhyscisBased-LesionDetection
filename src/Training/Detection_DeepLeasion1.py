@@ -63,7 +63,7 @@ def read_csv_gt(csv_dir):
 		gt_list.append([volume_name, y1, x1, y2, x2, lesion_type, spacing])
 	return gt_list
 
-class DeepLesion2(torch.utils.data.Dataset):
+class DeepLesion(torch.utils.data.Dataset):
 	def __init__(self, root, gt_csv, transforms, transform):
 		self.root = root
 		self.transforms = transforms
@@ -271,54 +271,24 @@ def get_transform():
 
 
 def get_transform_dicaugment(aug_policy):
-	if aug_policy["mode"] == "sequential":
-		t = []
 
-		t.append(dca.NPSNoise(magnitude=aug_policy['NPS_params'][0], p = aug_policy['NPS_params'][1]))
-		t.append(dca.HorizontalFlip(p = aug_policy['HorizontalFlip']))
-		t.append(dca.VerticalFlip(p = aug_policy['VerticalFlip']))
-		t.append(dca.RandomRotate90(axes=aug_policy['RandomRotate90'][0], p = aug_policy['RandomRotate90'][1]))
-		t.append(dca.Rotate(limit = aug_policy['Rotate'][1], axes=aug_policy['Rotate'][0], border_mode = aug_policy['Rotate'][2], value = aug_policy['Rotate'][3], p = aug_policy['Rotate'][4]))
-		t.append(dca.SliceFlip(p = aug_policy['SliceFlip']))
-		t.append(dca.Transpose(p = aug_policy['Transpose']))
-		# if aug_policy['RandomSizedCrop']:
-		# 	t.append(dca.RandomSizedCrop(min_max_height = aug_policy['RandomSizedCrop'][0], height = 512, width = 512, depth = 3, w2h_ratio = aug_policy['RandomSizedCrop'][1], d2h_ratio = aug_policy['RandomSizedCrop'][2], interpolation = aug_policy['RandomSizedCrop'][3], p = aug_policy['RandomSizedCrop'][4]))
-		t.append(dca.ShiftScaleRotate(shift_limit = aug_policy['ShiftScaleRotate'][0], scale_limit = aug_policy['ShiftScaleRotate'][1], rotate_limit = aug_policy['ShiftScaleRotate'][2], 
-										  interpolation = 2, border_mode = aug_policy['ShiftScaleRotate'][3], value = -1024, p = aug_policy['ShiftScaleRotate'][4]))
-		t.append(dca.Blur(blur_limit = aug_policy['Blur'][0], by_slice=aug_policy['Blur'][1], mode = aug_policy['Blur'][2], cval = aug_policy['Blur'][3], p = aug_policy['Blur'][4]))
-		t.append(dca.Downscale(scale_min = aug_policy['Downscale'][0], scale_max=aug_policy['Downscale'][1], interpolation = 2, p = aug_policy['Downscale'][2]))
-		t.append(dca.Sharpen(alpha = aug_policy['Sharpen'][0], lightness=aug_policy['Sharpen'][1], mode = aug_policy['Sharpen'][2], cval = aug_policy['Sharpen'][3], p = aug_policy['Sharpen'][4]))	
-		t.append(dca.RandomBrightnessContrast(max_brightness = aug_policy['RandomBrightnessContrast'][0], brightness_limit = aug_policy['RandomBrightnessContrast'][1], contrast_limit = aug_policy['RandomBrightnessContrast'][2], p = aug_policy['RandomBrightnessContrast'][3]))
-		t.append(dca.RandomGamma(gamma_limit = aug_policy['RandomGamma'][0], p = aug_policy['RandomGamma'][1]))
-		return dca.Compose(t, bbox_params= dca.BboxParams(format='pascal_voc_3d', label_fields=['class_labels']))
+	return dca.Compose([
+		dca.NPSNoise(magnitude=aug_policy['NPS_params'][0], p = aug_policy['NPS_params'][1]),
+		dca.OneOf([
+			dca.Blur(blur_limit = aug_policy['Blur'][0], by_slice=aug_policy['Blur'][1], mode = aug_policy['Blur'][2], cval = aug_policy['Blur'][3], p = aug_policy['Blur'][4]),
+			dca.Sharpen(alpha = aug_policy['Sharpen'][0], lightness=aug_policy['Sharpen'][1], mode = aug_policy['Sharpen'][2], cval = aug_policy['Sharpen'][3], p = aug_policy['Sharpen'][4]),
+			], p=aug_policy["oneOF"][0]),
+		dca.OneOf([
+			dca.HorizontalFlip(p = aug_policy['HorizontalFlip']),
+			dca.VerticalFlip(p = aug_policy['VerticalFlip']),
+			dca.RandomRotate90(axes=aug_policy['RandomRotate90'][0], p = aug_policy['RandomRotate90'][1]),
+			], p=aug_policy["oneOF"][1])
+		], bbox_params= dca.BboxParams(format='pascal_voc_3d', label_fields=['class_labels']), p=aug_policy["oneOF"][2])
 
-	if aug_policy["mode"] == "oneOF":
-		return dca.Compose([
-    		dca.NPSNoise(magnitude=aug_policy['NPS_params'][0], p = aug_policy['NPS_params'][1]),
-			dca.OneOf([
-        		dca.Blur(blur_limit = aug_policy['Blur'][0], by_slice=aug_policy['Blur'][1], mode = aug_policy['Blur'][2], cval = aug_policy['Blur'][3], p = aug_policy['Blur'][4]),
-        		dca.Sharpen(alpha = aug_policy['Sharpen'][0], lightness=aug_policy['Sharpen'][1], mode = aug_policy['Sharpen'][2], cval = aug_policy['Sharpen'][3], p = aug_policy['Sharpen'][4]),
-				dca.RandomBrightnessContrast(max_brightness = aug_policy['RandomBrightnessContrast'][0], brightness_limit = aug_policy['RandomBrightnessContrast'][1], contrast_limit = aug_policy['RandomBrightnessContrast'][2], p = aug_policy['RandomBrightnessContrast'][3]),
-				dca.RandomGamma(gamma_limit = aug_policy['RandomGamma'][0], p = aug_policy['RandomGamma'][1]),
-    			], p=aug_policy["oneOF"][0]),
-    		dca.OneOf([
-				dca.Downscale(scale_min = aug_policy['Downscale'][0], scale_max=aug_policy['Downscale'][1], p = aug_policy['Downscale'][2]),
-        		dca.HorizontalFlip(p = aug_policy['HorizontalFlip']),
-        		dca.VerticalFlip(p = aug_policy['VerticalFlip']),
-				dca.RandomRotate90(axes=aug_policy['RandomRotate90'][0], p = aug_policy['RandomRotate90'][1]),
-				dca.Rotate(limit = aug_policy['Rotate'][1], axes=aug_policy['Rotate'][0], border_mode = aug_policy['Rotate'][2], value = aug_policy['Rotate'][3], p = aug_policy['Rotate'][4]),
-				dca.SliceFlip(p = aug_policy['SliceFlip']),
-				dca.Transpose(p = aug_policy['Transpose']),
-				dca.ShiftScaleRotate(shift_limit = aug_policy['ShiftScaleRotate'][0], scale_limit = aug_policy['ShiftScaleRotate'][1], rotate_limit = aug_policy['ShiftScaleRotate'][2], 
-										  interpolation = 2, border_mode = aug_policy['ShiftScaleRotate'][3], value = -1024, p = aug_policy['ShiftScaleRotate'][4]),
-    			], p=aug_policy["oneOF"][1])
-			], bbox_params= dca.BboxParams(format='pascal_voc_3d', label_fields=['class_labels']), p=aug_policy["oneOF"][2])
-	
 
 
 def write_detection_csvFile(model, data_loader, log_dir, device):
 	n_threads = torch.get_num_threads()
-	# FIXME remove this and make paste_masks_in_image run on the GPU
 	torch.set_num_threads(1)
 	cpu_device = torch.device("cpu")
 	model.eval()
@@ -378,7 +348,7 @@ if __name__ == "__main__":
 	device = torch.device(hyper_params["device"]) if torch.cuda.is_available() else torch.device('cpu')
 
 	num_classes = 2
-	dataset = DeepLesion2(os.path.join(load_data_dir,'Train'), hyper_params["gt_annotations_dir"], 
+	dataset = DeepLesion(os.path.join(load_data_dir,'Train'), hyper_params["gt_annotations_dir"], 
 					   get_transform(), get_transform_dicaugment(aug_policy=hyper_params["aug_policy"]))
 	
 
