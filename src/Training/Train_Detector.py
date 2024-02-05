@@ -257,10 +257,8 @@ def build_model(hyper_params):
 					overwrite_eps(model, 0.0)
 
 			in_features = model.roi_heads.box_predictor.cls_score.in_features
-			model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
-			return model
-
-		
+			model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)	
+				
 	return model
 
 
