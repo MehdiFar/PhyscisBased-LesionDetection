@@ -2,9 +2,13 @@
 
 This project is designed to investigate the impact of physcis-based augmentation within a faster RCNN network to detect and localize abnormalities that a radiologist may identify during CT scan reviews.
 
+---
+
 ## Detection algorithm
 
-The detection algorithm is Faster RCNN [[1]](#1) using the physics-based augmentation [[2]](#2) to account for the noise effect caused by different reconstruction kernels.
+The detection algorithm is built upon Faster RCNN [[1]](#1) and enhanced using the physics-based augmentation [[2]](#2), accounting for the noise effect s caused by different reconstruction kernels.
+
+---
 
 ## Reconstruction kernels and noise texture
 Following noise textures illustrates examples of reconstruction kernels used for noise insertion simulation.
