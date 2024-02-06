@@ -19,6 +19,11 @@ Following noise textures illustrates examples of reconstruction kernels used for
 Python 3.10
 
 ## Instruction
+- Update the files directory to your local directory: ./src/files_directories.py
+- Convert CT scans png files to nifit files: python ./src/PreProcessing/files_directories.py
+- Divide the data into train/validation/test: python ./src/PreProcessing/Extract_train_val_test.py
+- Configure the Faster RCNN training hyper-parameters: ./src/Training/config.py
+- Train the network end to end: python ./src/Train_Detector.py
 
 
 
