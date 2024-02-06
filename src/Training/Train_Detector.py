@@ -25,8 +25,6 @@ from torchvision.models.detection.rpn import AnchorGenerator, RPNHead
 from torchvision.models.detection.backbone_utils import _resnet_fpn_extractor, _validate_trainable_layers
 from torchvision.models import resnet50, ResNet50_Weights
 import random
-
-
 from tqdm import tqdm
 import datetime
 from pathlib import Path
@@ -35,6 +33,7 @@ from torchinfo import summary
 import evaluation
 import resource
 from config import config
+
 
 
 def read_csv_gt(csv_dir):
@@ -258,7 +257,7 @@ def build_model(hyper_params):
 
 			in_features = model.roi_heads.box_predictor.cls_score.in_features
 			model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)	
-				
+
 	return model
 
 
@@ -340,6 +339,23 @@ if __name__ == "__main__":
 	hyper_params = config().params
 
 	model = build_model(hyper_params)
+
+
+	print(summary(model, input_size=(4, 3, 512, 512)))
+	# model.eval()
+	dummy_input = torch.rand(1, 3, 512,512).cuda()
+	traced_model = torch.jit.script(model, dummy_input)
+	traced_model.eval()
+	from torch.utils.tensorboard import SummaryWriter
+	writer = SummaryWriter("torchlogs/")
+	writer.add_graph(traced_model, dummy_input)
+	writer.close()
+
+
+
+
+
+
 	log_dir = os.path.join(hyper_params["saved_models_dir"], str(datetime.datetime.now()).replace(" ", "_"))
 	log_dir = log_dir.replace(":", "-")
 	load_data_dir = hyper_params["data_dir"]

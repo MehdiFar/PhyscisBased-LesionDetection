@@ -866,7 +866,7 @@ def plot_multiple_FROC_from_csv(addrs):
 	plt.show()
 	
 			
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
 	# ########################### next lines for nms ####################
 	# thresh_list = [0.2]
